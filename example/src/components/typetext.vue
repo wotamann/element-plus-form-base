@@ -3,9 +3,21 @@
  /* style labels */
  #form-base :deep(.type-form-base-native){ display:flex!important; flex-direction:column-reverse;margin-bottom: 0.6rem; }
  #form-base :deep(label) { color:#5698e470; font-weight: 400; font-size: 0.8rem;  }
-      
 
+    /* --- SET LABEL --- 
+    1)
+    Attr:
+    :label= "({key}) => `Label ${key}:`"
+    or
+    2)
+    CSS: 
+    #form-base :deep(.form-base label::before) { content: "Label "; }
+    #form-base :deep(.form-base label::after) { content: ":"; }
+    Attr:
+    :label= true 
+      */
 </style>
+
 <template>
   <v-form-base
     :model="myModel"

@@ -1,0 +1,22 @@
+{
+  "vFormBase.js": {
+    "isEntry": true,
+    "isDynamicEntry": false,
+    "file": "element-plus-form-base.es.js",
+    "imports": [
+      "vue"
+    ],
+    "dynamicImports": [],
+    "facadeModuleId": "src/formbase/vFormBase.vue"
+  },
+  "vFormBase-1.js": {
+    "isEntry": true,
+    "isDynamicEntry": false,
+    "file": "element-plus-form-base.umd.js",
+    "imports": [
+      "vue"
+    ],
+    "dynamicImports": [],
+    "facadeModuleId": "src/formbase/vFormBase.vue"
+  }
+}

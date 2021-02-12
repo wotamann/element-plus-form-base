@@ -1,6 +1,6 @@
 <style scoped>
  /* password red on hover */
- #form-base >>> .key-form-base-password input:hover { color: #f02c0a;}
+ #form-base :deep(.key-form-base-password input:hover) { color: #f02c0a;}
 </style>
 
 <template>
@@ -19,8 +19,7 @@
     @update:form-base="log"
   />    
 
-  <infoline :model="myModel" :schema="mySchema"/>
- 
+  <infoline :model="myModel" :schema="mySchema"/> 
 </template>
 
 <script>

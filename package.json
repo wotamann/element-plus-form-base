@@ -1,18 +1,16 @@
 {
-  "name": "elementplus-form-base",
+  "name": "element-plus-form-base",
   "version": "0.1.1",
   "description": "Form-Generator - Vue 3.0 Component using Element-Plus",
   "main": "index.js",
-  "module": "umd/eFormBase.umd.min.js",
-  "unpkg": "umd/eFormBase.umd.min.js",
+  "module": "./umd/element-plus-form-base.es.js",
+  "unpkg": "./umd/element-plus-form-base.umd.js",
   "scripts": {},
   "dependencies": {
-    "lodash": "^4.17.20",
-    "v-mask": "^2.2.4"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wotamann/elementplus-form-base.git"
+    "url": "git+https://github.com/wotamann/element-plus-form-base.git"
   },
   "keywords": [
     "vue",
@@ -33,10 +31,10 @@
     "grid",
     "controls"
   ],
-  "author": "woko@aon.at",
+  "author": "wotamann",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wotamann/elementplus-form-base/issues"
+    "url": "https://github.com/wotamann/element-plus-form-base/issues"
   },
-  "homepage": "https://github.com/wotamann/elementplus-form-base#readme"
+  "homepage": "https://github.com/wotamann/element-plus-form-base#readme"
 }

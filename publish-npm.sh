@@ -3,10 +3,11 @@
 # 1) cd to dir example
 # 2) commit git
 # 3) npm run build 
-#		-> generates in ../dist/src/ vFormBase.vue & ../umd/vFormBase.umd.min.js etc... 
+#		-> generates in ../docs/src/ vFormBase.vue & ../umd/vFormBase.umd.min.js etc... 
 #		-> generates in wotamann.github.io  dir static  
 #       -> copy index.html to 404.html  (to enable in github.pages vue router history mode) 
-# 4) publish
+#  4) npm run build	 
+#  5) publish
 #    	cd ..
 # 		npm version patch
 # 		npm publish --otp=<code>

@@ -1,0 +1,83 @@
+<html>
+  <head>
+    <title>ElementPlus FormBase CDN</title>
+    
+    <meta charset="UTF-8" />
+	  <meta name="viewport" content="width=device-width,initial-scale=1.0"> 
+	  <!-- import VUE -->
+    <script src="https://unpkg.com/vue@next"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/lib/theme-chalk/index.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-plus/lib/index.full.js"></script>
+	  <!-- import element-Plus-Form-Base -->
+    <script src="../umd/element-plus-form-base.umd.js"></script>
+	<style>
+	#form-base .form-base { padding:6px; background-color: #def; }
+   </style>
+  </head>
+  
+  <body>
+    
+	<div id="app">
+	  <el-container>
+		<el-main>
+		  <h4>Element-plus-Form-Base</h4>
+			  <div>
+				<formbase 
+				  :model="model" 
+				  :schema="schema" 
+				  :col="{span:24, sm:12, md:8 }" 
+				  @update:form-base="log" 
+				/>
+				</div>	
+			
+		  <h4>Model</h4>
+				<span>{{model}}</span>
+		  <h4>Schema</h4>
+		  <span>{{schema}}</span>
+		  <h4>Update Events in Console</h4>
+		  
+		  <p>Trigger:{{logvalue.trigger}}</p>
+		  <p>from Key:{{logvalue.key}}</p>
+		  <p>with Value:{{logvalue.value}}</p>
+		  <p>Current:{{logvalue.obj}}</p>
+		  <p>{{logvalue}}</p>
+		</el-main>
+	  </el-container>
+    </div>
+	
+    <script>
+      const App = {
+        components:{ formbase },
+        data:() => ({
+		  logvalue:{},
+          model: {
+            name:'',
+            date:null,				
+            radio:'B',
+			checkbox:['A'],
+			select:['C'],
+            color:'#0A2'				
+          },
+          schema:{
+            name:{ comp:'input', placeholder:'Textfield...', clearable:true },
+            date:{ comp:'datePicker' },
+            radio:{ comp:'radio', options:['A','B','C'] },
+            checkbox:{ comp:'checkboxGroupButton', options:['A','B','C'] },
+            select:{ comp:'select', options:['A','B','C'], multiple:true },
+            color:{ comp:'colorPicker' }
+          }
+        }),
+        methods:{
+          log(v){
+			this.logvalue = v
+            console.log('Key:',v.obj.key,'Value:', ' - - - ',v.value, v)
+          }
+        }
+      };
+      const app = Vue.createApp(App);
+      app.use(ElementPlus).mount("#app");
+    </script>
+  </body>
+</html>

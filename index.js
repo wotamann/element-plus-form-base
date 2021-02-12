@@ -1,3 +1,3 @@
 //index.js
-var FormBase = require('./dist/src/vFormBase.vue')
+var FormBase = require('./example/src/formbase/vFormBase.vue')
 module.exports = FormBase

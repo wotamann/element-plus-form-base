@@ -9,9 +9,9 @@
     
   /* CSS Component --- Container */
   #form-base-css { background-color: #fff9e6; }
-  #form-base-css >>> input { background-color: #dbe6f3b9; color:#0043d3b9 }
-  #form-base-css >>> input:hover { background-color: #57bafcb9; }
-  #form-base-css >>> input:focus { background-color: #0043d3b9; color:#FFF }
+  #form-base-css :deep(input) { background-color: #dbe6f3b9; color:#0043d3b9 }
+  #form-base-css :deep(input:hover) { background-color: #57bafcb9; }
+  #form-base-css :deep(input:focus) { background-color: #0043d3b9; color:#FFF }
 
   /* CSS Item --- add CSS to every item in formbase  */
   #form-base-css .item { padding:0.5rem; border: 1px dotted #eedf9b}
