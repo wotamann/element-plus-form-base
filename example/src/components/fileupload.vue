@@ -4,7 +4,17 @@
     :model="myModel"
     :schema="mySchema" 
     @update:form-base="log"
-  />    
+  >
+    <!-- Trigger Fileeselection   -->
+    <template #slot-inject-trigger-key-form-base-upload>
+      <el-button size="small" type="primary">select file</el-button>
+    </template>
+    <!-- Show Info Tip -->
+    <template #slot-inject-tip-key-form-base-upload="{obj}">   
+      <div :style="{backgroundColor:'#67C23A', color:'#FFF', padding:'4px'}" class="el-upload__tip">{{obj.schema.tip}}</div>
+    </template>
+
+  </v-form-base>
 
   <infoline :model="myModel" :schema="mySchema"/> 
 </template>
@@ -22,16 +32,30 @@ export default {
   data: ()=>({
       fileList:null,
       myModel: {
-        file:null
+        input:'Fileselector',
+        upload:null
       },     
       mySchema: {
+        input:'input',
         file: { 
           comp: 'file',
-          action:'',
+          button: 'Select Files',
+          action:'https://192.168.0.137:8080/api/',
+          autoUpload:true,
           multiple:true,
-          accept:' .jpg, .jpeg, .png, .gif',          
+          // getVal:((v,o,m,s) => s.file.accept + '!')
+          // onChange: (f,fl)=>  console.log('inline sel-upload',f, fl),
+          // :file-list="fileList"
+        }, 
+        upload: { 
+          comp: 'file',
+          url:'http://localhost/',
+          action:'',
           autoUpload:false,
-          text:'Image Selector',
+          text:'Upload Selector',
+          accept:' .jpg, .jpeg, .png, .gif',          
+          tip:'Only Images',
+          button:{ type:'success', size:'large', text:'Upload', iconRight:'el-icon-upload2' }
           // onChange: (f,fl)=>  console.log('inline sel-upload',f, fl),
           // :file-list="fileList"
         }, 

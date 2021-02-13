@@ -13,6 +13,11 @@ export default {
     assetsDir:'./assets',
     emptyOutDir:true,
     target:'modules',
+  },
+  server: {
+    port: 8080,
+    https: true,
+
   }
 }
 

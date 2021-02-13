@@ -101,14 +101,23 @@
               <!-- UPLOAD -->
               <template v-else-if="isComponent(obj, 'file')">
                 <el-upload
-                  :on-change="
-                    (file, fileList) => onFileEvent(obj, file, fileList)
-                  "
+                  :on-change="(file, fileList) => onFileEvent(obj, file, fileList)"
                   v-bind="bindSchema(obj)"
                 >
-                  <el-button size="small" type="primary">{{
-                    obj.schema.text || "File Upload"
-                  }}</el-button>
+                  <!-- Button in Upload -->
+                  <slot :name="getFileUploadSlot(obj)" v-bind="{ obj, index, id }" >
+                    <el-button v-bind="bindFileButtonSchema(obj)">
+                      {{ setInnerTextFileButton(obj) }}
+                      <i v-if="obj.schema?.button?.iconRight" :class="obj.schema?.button?.iconRight + ' el-icon-right'" />                    
+                    </el-button>
+                  </slot>
+                  <!-- Tip -->
+                  <template v-for="s in getInjectedScopedSlots(id, obj)" #[s]="slotData" >
+                    <slot :name="getKeyInjectSlot(obj, s)" v-bind="{ id, obj, index, model, schema, ...slotData }" >
+                      <div class="el-upload__tip">{{obj.schema?.tip}}</div>
+                    </slot>
+                  </template>
+
                 </el-upload>
               </template>
               <!-- END FILE -->
@@ -132,7 +141,8 @@
                 </template>
                 
                 <template v-if="isComponent(obj, 'button')">
-                  {{ setInnerButtonText(obj) }}
+                  {{ setInnerTextButton(obj) }}
+                  <i v-if="obj.schema.iconRight" :class="obj.schema.iconRight + ' el-icon-right'"></i>
                 </template>
 
                 <template v-if="isComponent(obj, 'checkboxButton|checkboxGroupButton|radioButton|tag|input')">
@@ -189,32 +199,7 @@ import {
   orderBy,
   omit,
   delay,
-} from "lodash";
-// import {
-//   defaultComponent,
-//   defaultID,
-//   defaultRow,
-//   defaultCol,
-//   defaultFormLabel,
-//   defaultTooltip,
-// } from "./config.js";
-// import {
-//   formlabelTag,
-//   componentTag,
-//   valueTag,
-//   labelTag,
-//   innerTag,
-//   hookSet,
-//   hookGet,
-//   mapSchemaToElement,
-//   setNoValueOnEvent,
-// } from "./config.js";
-// import {
-//   defaultSchemaIfValueIsNullOrUndefined,
-//   defaultSchemaIfValueIsString,
-//   defaultSchemaIfValueIsNumber,
-//   defaultSchemaIfValueIsBoolean,
-// } from "./config.js";
+} from 'lodash'
 //#endregion
 
 //#region Declaration
@@ -228,6 +213,8 @@ const topAppendix = "top";
 const bottomAppendix = "bottom";
 const slotAppendix = "slot";
 const tooltipAppendix = "tooltip";
+const fileUploadTipAppendix = "file-upload-tip";
+const fileUploadAppendix = "file-upload";
 const injectAppendix = "inject";
 const itemClassAppendix = "item"; // class obsolet
 const typeClassAppendix = "type";
@@ -241,11 +228,13 @@ const arraySlotAppendix = `${slotAppendix}-${arrayClassAppendix}`;
 const topSlotAppendix = `${slotAppendix}-${topAppendix}`;
 const itemSlotAppendix = `${slotAppendix}-${itemClassAppendix}`;
 const bottomSlotAppendix = `${slotAppendix}-${bottomAppendix}`;
-const tooltipSlotAppendix = `${slotAppendix}-${tooltipAppendix}`;
-//
+const tooltipSlotAppendix = `${slotAppendix}-${tooltipAppendix}`
+const fileUploadTipSlotAppendix = `${slotAppendix}-${fileUploadTipAppendix}`
+const fileUploadSlotAppendix = `${slotAppendix}-${fileUploadAppendix}`
 //#endregion
 
-//#region CONFIG.JS
+//#region config.js
+
 // form-base attributes
 const defaultID = 'form-base'
 const defaultComponent = 'default' // must exist in mapSchemaToElement / mapper.js
@@ -253,7 +242,7 @@ const defaultRow = { gutter:10, justify:'space-between', align:'start' }
 const defaultCol = { span:6 } // { span:12, sm: 6, md:4, lg:3, xl:2}
 const defaultFormLabel = null
 const defaultTooltip = (content) => ({ content, placement:'bottom', effect:'light', visibleArrow: false })
-
+const defaultFileButton = { text:'File Upload', type:'primary', size:'medium', plain:true, icon:'el-icon-upload2'}
 const componentTag = 'comp'
 const nullValue = 'nullValue'
 
@@ -330,7 +319,7 @@ const mapSchemaToElement ={
 export default {
   // works with Vue 3.0
   name: "ElementPlusFormBase",
-  //inheritAttrs: false,
+  // inheritAttrs: false,
   // emits: ['input', 'change', 'clear', 'update', 'click', 'focus', 'blur', 'select'],
   props: {
     root: {
@@ -370,15 +359,6 @@ export default {
   computed: {
     baseId() {
       return this.root ? this.root : this.id;
-    },
-    parent() {
-      let p = this;
-      if (p.$parent && p.$parent.$parent) {
-        while (p.id.startsWith(p.$parent.$parent.id + "-")) {
-          p = p.$parent.$parent;
-        }
-      }
-      return p;
     },
     index() {
       const m = this.id && this.id.match(/\d+/g);
@@ -421,26 +401,49 @@ export default {
 
     // Values of FILE/BUTTON
     handleChange(file, fileList) {
+      // xxxxxxxxx not in use xxxxxxxxxxxxxxxxxxxxxxxxx
       this.fileList = fileList.slice(-3);
     },
-
-    setInnerTextCheckRadioSwitch(obj){
-      // return obj.schema.text
-      const text = obj.schema?.text ? obj.schema?.text : null;
-      return obj.schema?.textKey ? this.getObjectByPath(this.model, obj.schema?.textKey) : text
+    handleTextKey(obj, schema){
+      const text = schema?.text ? schema?.text : null;
+      const textKey = schema?.textKey
+      return isFunction(textKey) ? textKey( obj.value, obj, this.model, this.schema) : textKey ? this.getObjectByPath(this.model, schema?.textKey) : text
     },
-
-    setInnerButtonText(obj) {
-      // Set Value @click using function getVal(value, obj, model, schema)
-      // button: { comp: 'button', valueKey:'button', getVal:(v)=> v }, 
-      // button: { comp: 'button', textKey:'control.button', getVal:(v)=> v }, 
+    handleValueKey(obj, schema){
+      const valueKey = schema?.valueKey 
+      return isFunction(valueKey) ? schema.getVal = valueKey : valueKey ? obj.value = this.getObjectByPath(this.model, valueKey) : null
+    },
+    setInnerTextCheckRadioSwitch(obj){
+      // set Text of Radio, Checkbox, Filebutton 
+      // 'textKey' definition overrules 'text'
+      // Checkbox: { comp: 'checkbox', text:'button' },             // return obj.schema.text      
+      // Checkbox: { comp: 'checkbox', textKey:'button' },          // ref to model path and take value      
+      // Checkbox: { comp: 'checkbox', textKey:'control.deepbutton' },  // ref to model path and take value
+      // Checkbox: { comp: 'checkbox', textKey:(value, obj, model, schema) => model.control.deepbutton + ':' }, // use function
+      return this.handleTextKey(obj, obj.schema)
+    },
+    setInnerTextFileButton(obj) {
+      this.handleValueKey(obj, obj.schema.button)
+      return this.handleTextKey(obj, obj.schema.button) 
+    },
+    setInnerTextButton(obj) {
+      // Set Value on Click
+      // valueKey:(value, obj, model, schema) => value
+      // valueKey:'path.to.model.key'
+      
+      // Set Button Label/Text
+      // text:'myButton'
+      // textKey:(value, obj, model, schema) => value
+      // textKey:'path.to.model.key'
+      
+      // button: { comp: 'button', text:'B1', valueKey:'path.key' }, 
+      // button: { comp: 'button', textKey:'button', valueKey:(v)=> v }, 
+      // button: { comp: 'button', textKey:'control.button', valueKey:(v)=> v }, 
       // button: { comp: 'button', text:'Login' }, 
-      // button: { comp: 'button', getVal:(v)=> 'clicked value' }, 
-      const text = obj.schema?.text ? obj.schema?.text : null;
-      return obj.schema?.valueKey ? this.getObjectByPath(this.model, obj.schema?.valueKey) 
-      : obj.schema?.textKey ? this.getObjectByPath(this.model, obj.schema?.textKey) 
-      : text ? text 
-      : obj.value;
+      // button: { comp: 'button', valueKey:'path.key' },
+
+      this.handleValueKey(obj, obj.schema)
+      return this.handleTextKey(obj, obj.schema)     
     },
     //#endregion
 
@@ -465,7 +468,7 @@ export default {
     },
     //#endregion
 
-    //#region SETVAL, EMITTER & HELPER
+    //#region SET/GETVAL, ONEVENT, EMIT & HELPER
     setItem(item) {
       return isString(item) ? { item } : item;
     },
@@ -563,7 +566,7 @@ export default {
     },
     //#endregion
 
-    //#region DRAG / DROP
+    //#region DRAG/DROP
     dragstart(event, obj) {
       if (!obj.schema.drag) return;
 
@@ -614,6 +617,10 @@ export default {
     //#endregion
 
     //#region BINDINGS
+    bindFileButtonSchema(obj){
+      obj.schema.button = isPlainObject(obj.schema.button) ? obj.schema.button : isString(obj.schema.button) ? { text: obj.schema.button }  : defaultFileButton;
+      return obj.schema.button
+    },
     bindCol(obj) {
       const col = obj.schema.col || this.col || defaultCol;
       return isPlainObject(col)
@@ -648,8 +655,9 @@ export default {
       const omitArray = this.getComponentObject(obj, "omit");
       return omit(obj.schema, omitArray);
     },
+    //#endregion
 
-    // OPTIONS
+    //#region OPTIONS
     getOptions(obj) {
       // schema.options in RADIO/BUTTON/CHECKBOX
       let o = isArray(obj.schema.options) ? obj.schema.options : [];
@@ -674,8 +682,9 @@ export default {
       let label = obj.schema?.labelKey ? item[obj.schema?.labelKey] : item[labelTag]
       return label !== undefined ? label : value
     },
+    //#endregion
 
-    // TOOLTIP
+    //#region TOOLTIP
     isDisabledTooltip(obj) {
       return obj.schema?.tooltip?.disabled ? obj.schema?.tooltip?.disabled : !obj.schema?.tooltip
     },
@@ -684,11 +693,9 @@ export default {
       const schemaTooltip = obj.schema.tooltip
       return { content: "", ...(isString(schemaTooltip) ? defaultTooltip(schemaTooltip) : schemaTooltip) }
     },
-
     //#endregion
 
-    //#region GET LABEL / ITERATION KEY FOR TYPE ARRAY
-
+    //#region GET ITERATION KEY FOR ARRAY
     getKeyForArray(id, obj, item, index) {
       // IMPORTANT if you want to add or remove items in type:'array'
       // more Info ->
@@ -719,12 +726,9 @@ export default {
 
     // ############## METHODS #################
     // ############## METHODS #################
-
     // ############## METHODS #################
     // ############## METHODS #################
-    // MAP TYPE
-
-    //#region METHODS DEPRECATED
+    //#region METHODS DEPRECATED XXX XXX XXX
 
     // GET IMG SOURCE
     getImageSource(obj) {
@@ -740,8 +744,23 @@ export default {
     //   return obj.schema.laxbel ? obj.schema.labxel : this.setValue(obj);
     // },
     //
+    //#endregion
 
-    // FORM SLOTS
+    //#region FORM SLOTS
+    // SANITIZE SLOTS
+    getInjectedScopedSlots(id, obj) {
+      // <template #slot-inject-thumb-label-key-formbase-path-to-mykey />
+      // extract the verb 'injected-action' from Slots starting with 'slot-inject' and matching [component-id] and [key]
+      const rx = new RegExp(`${injectSlotAppendix}-(.*?)-${keyClassAppendix}`);
+      return Object.keys(this.$slots)
+        .filter(
+          (s) =>
+            s.includes(
+              `${id}${classKeyDelimiter}${obj.key.replace(/\./g, "-")}`
+            ) && s.includes(injectSlotAppendix)
+        )
+        .map((i) => i.match(rx)[1]);
+    },
     getFormTopSlot() {
       // Slot for Top Line in Formbase -> 'slot-formbase-top'
       return `${topSlotAppendix}-${this.id}`;
@@ -802,28 +821,14 @@ export default {
         `${itemSlotAppendix}-${arrayClassAppendix}`
       );
     },
-
-    //  ############ DEPRECATED
-    getArrayTopSlot(obj) {
-      // slot each item from array  -> 'slot-top-array-formbase-address-city'
-      return this.getKeyClassNameWithAppendix(
-        obj,
-        `${topSlotAppendix}-${arrayClassAppendix}`
-      );
+    // FILE UPLOAD SLOTS
+    getFileUploadTipSlot(obj){
+      // Slot for Top Line in Formbase -> 'slot-formbase-top'
+      return `${fileUploadTipSlotAppendix}`;
     },
-    getArrayItemSlot(obj) {
-      // slot each item from array  -> 'slot-top-array-formbase-address-city'
-      return this.getKeyClassNameWithAppendix(
-        obj,
-        `${itemSlotAppendix}-${arrayClassAppendix}`
-      );
-    },
-    getArrayBottomSlot(obj) {
-      // slot each item from array   -> 'slot-bottom-array-formbase-address-city'
-      return this.getKeyClassNameWithAppendix(
-        obj,
-        `${bottomSlotAppendix}-${arrayClassAppendix}`
-      );
+    getFileUploadSlot(obj){
+      // Slot for Top Line in Formbase -> 'slot-formbase-top'
+      return `${fileUploadSlotAppendix}`;
     },
     //
     // TYPE SLOTS
@@ -848,8 +853,9 @@ export default {
         `${bottomSlotAppendix}-${typeClassAppendix}`
       );
     },
-    //
-    // CLASS Names
+    //#endregion
+
+    //#region CLASS Names
     getPropertyClassNameWithAppendix(obj, appendix) {
       // get PROP specific name by app-/prepending 'appendix-' and replacing '.' with '-' in nested key path  -> 'controls switch'
       return obj.key
@@ -899,35 +905,18 @@ export default {
         obj
       )} ${this.getPropertyClassName(obj)}`;
     },
-    //
-    // GRID
+    //#endregion
+
+    //#region GRID/COL
     getRowGroupOrArray(obj) {
       return obj.schema.row || this.row || defaultRow;
     },
     getColGroupOrArray(obj) {
       return obj.schema.col || this.col || defaultCol;
     },
-    //
-    // SANITIZE SLOTS
-    getInjectedScopedSlots(id, obj) {
-      // <template #slot-inject-thumb-label-key-formbase-path-to-mykey />
-      // extract the verb 'thumb-label' from Slots starting with 'slot-inject' and matching [component-id] and [key]
-      const rx = new RegExp(`${injectSlotAppendix}-(.*?)-${keyClassAppendix}`);
-      return Object.keys(this.$slots)
-        .filter(
-          (s) =>
-            s.includes(
-              `${id}${classKeyDelimiter}${obj.key.replace(/\./g, "-")}`
-            ) && s.includes(injectSlotAppendix)
-        )
-        .map((i) => i.match(rx)[1]);
-    },
-    //
     //#endregion
-
-    //#region BASICS
-
-    // PREPARE ARRAYS DATA & SCHEMA
+    
+    //#region PREPARE ARRAYS DATA & SCHEMA
     getObjectByPath(object, path) {
       // resolves chained keys (like 'user.address.street') on an object and get the value
       let pathArray = path.split(pathDelimiter);
@@ -1036,7 +1025,8 @@ export default {
           if (prop === "value" && ts && ts[hookGet]) {
             const tk = target.key;
             const tp = target[prop];
-            // console.log(tk, '##GET',prop, isFunction(ts[hookGet]))
+            //  console.log(tk, '##GET', isFunction(ts[hookGet], tp, target, model, schema))
+
             const proxyValue = isFunction(ts[hookGet])
               ? ts[hookGet](tp, target, model, schema)
               : ts[hookGet]
@@ -1066,7 +1056,6 @@ export default {
         },
       });
     },
-
     flattenAndCombineToArray(model, schema) {
       // flatten nested structure of both objects 'model' & 'schema' ...
       let flattenedObjects = this.flattenObjects(model, schema);
@@ -1144,8 +1133,7 @@ export default {
         this.storeStateData,
         this.storeStateSchema
       );
-    },
-    //
+    },    
     //#endregion
   },
   created() {

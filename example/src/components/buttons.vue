@@ -1,8 +1,6 @@
 <style scoped>
   /* <style scoped> with :deep()  or use <style> without scoped */
-  #form-base :deep(.form-base) {  padding:4px}
-  
-  /* #form-base :deep(.form-base){ display:flex!important; flex-direction:row; justify-content:start!important; align-items: center; padding: 0.5rem;   } */
+  #form-base :deep(.form-base) {  padding:4px}  
  </style>
 
 <template>
@@ -21,38 +19,43 @@
 import vFormBase from '../formbase/vFormBase.vue'
 import Infoline from './infoline.vue'
 import log from '../lib.js'
-import states from '../assets/states.js'
-
-const fetchSuggestions = (search, cb) => cb( states.filter( ({text}) => text?.toUpperCase()?.includes(search?.toUpperCase())).map( i => ({ value: `[${i.value}] ${i.text}` }))) 
 
 export default {
   name:'inputs',
   components: { vFormBase, Infoline },
   data: ()=>({
     myModel: { 
-        buttonLabel:'Model-Label',                 
-        button1:'mini-1',
-        button2:'medium-2',
-        button3:'large-3',
-        button4:'round-4',
-        control:{
-          button5: 0,
-          button6:'ctrl-btn-6',
-          button7:'ctrl-btn-7',
-          button8:'ctrl-btn-8',
-        }
+      button1:'',
+      button2:'Check',
+      button3:'Icons',
+      button4:'L4',
+      button5:'L5',
+      button6:'L6 ',
+      button7:'L7',
+      button8:'L8',
+      buttonLabel:'Model-Label',                 
+      control:{
+        button1: 0,
+        button2:'C-L2',
+        button3:'C-L3',
+        button4:'C-L4',
+        buttonLabel:'Model-Control-Label'
+      }
     },     
     mySchema: { 
-      button1: { comp: 'button', size:'mini', type:'primary', text:'Mini' }, 
-      button2: { comp: 'button', size:'medium', type:'warning', text:'Medium' }, 
-      button3: { comp: 'button', size:'large', type:'danger', text:'Large' }, 
-      button4: { comp: 'button', size:'large', type:'success', round:true, text:'Round'  }, 
+      button1: { comp: 'button' }, //#no text#
+      button2: { comp: 'button', icon:'el-icon-check'}, //#no text#
+      button3: { comp: 'button', icon:'el-icon-check', text:'Icons', iconRight:'el-icon-delete'}, 
+      button4: { comp: 'button', text:'Button 4' }, 
+      button5: { comp: 'button', text:'Button 5', valueKey:(v, o, m, s)=> m.buttonLabel }, 
+      button6: { comp: 'button', textKey:() => 'Button 6 Fn()' }, 
+      button7: { comp: 'button', textKey:'control.buttonLabel', valueKey:'buttonLabel' }, // point to model path/prop model.control.buttonLabel
+      button8: { comp: 'button', icon:'el-icon-check', valueKey:'button2' }, //#no text#
       control:{
-        button5: { comp: 'button', getVal:(v)=> v + 1 }, 
-        // 
-        button6: { comp: 'button', valueKey:'control.button6' }, 
-        button7: { comp: 'button', valueKey:'control.button7', getVal:(v)=> v + ' #' }, 
-        button8: { comp: 'button', valueKey:'buttonLabel' }, 
+        button1: { comp: 'button', size:'mini', type:'primary', textKey:'control.button1', valueKey:(v, o, m, s)=> v+2  }, 
+        button2: { comp: 'button', size:'medium', type:'warning', icon:'el-icon-check', plain:true, text:'Medium Plain' }, 
+        button3: { comp: 'button', size:'large', type:'danger', icon:'el-icon-check', iconRight:'el-icon-delete' }, 
+        button4: { comp: 'button', size:'large', type:'success', round:true, iconRight:'el-icon-check',text:'Round'  }, 
       }
     }
   }),  

@@ -22,12 +22,12 @@ export default {
     myModel: {
       user:'Jobs',
       password:'12345678',
-      date:''
+      color:'#BB0022'
     }, 
     mySchema: {
       user:{ comp: 'input', placeholder:'User', clearable:true }, 
       password:{ comp: 'input', placeholder:'Password', showPassword:true }, 
-      date: { comp: 'datePicker', placeholder:'Select Date' }, 
+      color: { comp: 'colorPicker' }, 
     }
   }),  
   methods: {

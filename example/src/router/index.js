@@ -36,7 +36,7 @@ const routes = [
   
   { path: '/selection', name: 'selection', component: selection, text:'Selection', title:'Select Items defined in Schema' },      
   { path: '/radios', name: 'radios', component: radios, text:`Radios & Radio-Buttons`,title:'Play around with Radios & Radio-Buttons'  },    
-  { path: '/checkboxes', name: 'checkboxes', component: checkboxes, text:`Checkboxes & Groups`,title:'Play around with Checkboxes & Groups'  },    
+  { path: '/checkboxes', name: 'checkboxes', component: checkboxes, text:`Checkboxes & Groups`,title:'Play around with Checkboxes & Button-Groups'  },    
   { path: '/array', name: 'array', component: array, text:`Array from Model`,title:'Data in nested Array by using one Schema for all Items'  },      
   { path: '/arraylist', name: 'arraylist', component: arraylist, text:`List from Model`,title:'Select Item in List from Model-Data'  },      
   { path: '/tree', name: 'tree', component: tree, text:`Tree from Model`,title:'Select Item in Tree from Model-Data'  },      

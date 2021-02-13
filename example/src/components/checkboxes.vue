@@ -51,7 +51,7 @@ export default {
         checkboxBorder3:true,
         
         checkboxBtn1: true,
-        checkboxBtn2: 'green',
+        checkboxBtn2: 'Green',
         checkboxBtn3: true,
 
         checkboxGroup:[],
@@ -64,17 +64,17 @@ export default {
       mySchema: {     
         checkbox1: { comp: 'checkbox', text:'Checkbox' },
         checkbox2: { comp: 'checkbox', text:'Yes/No', trueLabel:'Yes', falseLabel:'No' },
-        checkbox3: { comp: 'checkbox', text:'Indeterminate', indeterminate: true },
+        checkbox3: { comp: 'checkbox', text:'Indeterminate', indeterminate: true, textKey:(o, m) => 'Fn:' + m.checkbox2 },
       
         checkboxBorder1: { comp: 'checkbox', text:'Mini', size:'mini', border:true },
         checkboxBorder2: { comp: 'checkbox', text:'Small', size:'small', border:true },
         checkboxBorder3: { comp: 'checkbox', text:'Medium', size:'medium', border:true },
         
-        checkboxBtn1: { comp: 'checkboxButton', text:'Button' },
-        checkboxBtn2: { comp: 'checkboxButton', trueLabel:'green', falseLabel:'grey', textKey:'checkboxBtn2' },
+        checkboxBtn1: { comp: 'checkboxButton', text:'Button', textKey:(o) => o.value ? 'Active' : 'Inactive'  },
+        checkboxBtn2: { comp: 'checkboxButton', trueLabel:'Green', falseLabel:'Grey', textKey:'checkboxBtn2'   },
         checkboxBtn3: { comp: 'checkboxButton', text:'Disabled', disabled:true },
         
-        checkboxGroup: { comp: 'checkboxGroup',  options: optionsObj, labelKey:'label' },
+        checkboxGroup: { comp: 'checkboxGroup',  options: optionsObj, labelKey:'label'},
         checkboxGroupBtn1: { comp: 'checkboxGroupButton',  options, textColor:'#D00', fill:'#FCC'},
         checkboxGroupBtn2: { comp: 'checkboxGroupButton', options:optionsObj, valueKey:'id', labelKey:'name',textColor:'#FFF', fill:'#090' },       
       }
