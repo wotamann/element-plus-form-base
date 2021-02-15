@@ -10,6 +10,7 @@ import selection from "../components/selection.vue";
 import linkedformbase from "../components/linkedformbase.vue";
 import fileupload from "../components/fileupload.vue";
 import modifyvalue from "../components/modifyvalue.vue";
+import customcomponents from "../components/customcomponents.vue";
 import icons from "../components/icons.vue";
 import deep from "../components/deep.vue";
 import tree from "../components/tree.vue";
@@ -48,6 +49,7 @@ const routes = [
   { path: '/fileupload', name: 'fileupload', component: fileupload, text:'File Upload', title:'Select and/or upload Files' },      
   { path: '/linkedformbase', name: 'linkedformbase', component: linkedformbase, text:'Link Form-Bases', title:'Link two Element-Form-Base Components' },      
   { path: '/modifyvalue', name: 'modifyvalue', component: modifyvalue, text:'Modify Values', title:'Modify incoming and outgoing values' },      
+  { path: '/customcomponents', name: 'customcomponents', component: customcomponents, text:'Custom Components', title:'Work with Custom-Components' },      
   { path: '/dragdrop', name: 'dragdrop', component: dragdrop, text:'Drag & Drop', title:'Try to drag and drop your components'},
   { path: '/deep', name: 'deep', component: deep, text:`Deep Model`,title:'Deep nested Model including Arrays and Objects mapped to Form'  },    
   { path: '/css', name: 'css', component: css, text:`CSS, Tooltips & Buttons`,title:'Play around with predefined CSS, Buttons, Icons and Tooltips'  },    

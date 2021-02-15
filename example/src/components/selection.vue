@@ -8,6 +8,7 @@
     :model= "myModel"
     :schema= "mySchema"
     :col=8
+    :label=true
     @update:form-base="log"
   >
     <!-- Select options slot -->
@@ -26,7 +27,6 @@ import vFormBase from '../formbase/vFormBase.vue'
 import Infoline from './infoline.vue'
 import log from '../lib.js'
 import states from '../assets/states.js'
-
 
 const options = ['Musk', 'Jobs', 'Taleb', 'Harari']
 const optionsObject = [{label:'Label A', value:'A'}, {label:'Label B (disabled)', value:'B',  disabled: true}, {label:'Label C', value:'C'}, {label:'Label D', value:'D'}]

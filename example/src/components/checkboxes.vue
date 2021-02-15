@@ -54,9 +54,6 @@ export default {
         checkboxBtn2: 'Green',
         checkboxBtn3: true,
 
-        checkboxGroup:[],
-        checkboxGroupObj:null,
-        
         checkboxGroup:['Label 1'],
         checkboxGroupBtn1:['B'],
         checkboxGroupBtn2:['2','3']

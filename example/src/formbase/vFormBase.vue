@@ -106,10 +106,10 @@
                 >
                   <!-- Button in Upload -->
                   <slot :name="getFileUploadSlot(obj)" v-bind="{ obj, index, id }" >
-                    <el-button v-bind="bindFileButtonSchema(obj)">
+                    <component :is="getComponentObject(obj.schema)" v-bind="bindFileInnerSchema(obj)">
                       {{ setInnerTextFileButton(obj) }}
-                      <i v-if="obj.schema?.button?.iconRight" :class="obj.schema?.button?.iconRight + ' el-icon-right'" />                    
-                    </el-button>
+                      <i v-if="obj.schema.schema?.iconRight" :class="obj.schema.schema?.iconRight + ' el-icon-right'" />                    
+                    </component>
                   </slot>
                   <!-- Tip -->
                   <template v-for="s in getInjectedScopedSlots(id, obj)" #[s]="slotData" >
@@ -123,6 +123,7 @@
               <!-- END FILE -->
 
               <!-- ELSE -->
+              
               <component
                 v-else
                 :is="getComponentObject(obj)"
@@ -233,7 +234,7 @@ const fileUploadTipSlotAppendix = `${slotAppendix}-${fileUploadTipAppendix}`
 const fileUploadSlotAppendix = `${slotAppendix}-${fileUploadAppendix}`
 //#endregion
 
-//#region config.js
+//#region Configuration
 
 // form-base attributes
 const defaultID = 'form-base'
@@ -242,7 +243,7 @@ const defaultRow = { gutter:10, justify:'space-between', align:'start' }
 const defaultCol = { span:6 } // { span:12, sm: 6, md:4, lg:3, xl:2}
 const defaultFormLabel = null
 const defaultTooltip = (content) => ({ content, placement:'bottom', effect:'light', visibleArrow: false })
-const defaultFileButton = { text:'File Upload', type:'primary', size:'medium', plain:true, icon:'el-icon-upload2'}
+const defaultIinnerFile = { comp:'buton', text:'File Upload', type:'primary', size:'medium', plain:true, icon:'el-icon-upload2'}
 const componentTag = 'comp'
 const nullValue = 'nullValue'
 
@@ -251,6 +252,7 @@ const formlabelTag = 'label'
 const labelTag = 'label'   
 const valueTag = 'value'
 const innerTag = 'text'
+const innerFile = 'schema' 
 // hook in Proxy set/get Value  - value or Function
 const hookGet = 'getVal' // schema.getVal = val or fn(val, obj) => val
 const hookSet = 'setVal' // schema.setVal = val or fn(val, obj) => val
@@ -272,6 +274,8 @@ const mapSchemaToElement ={
     // omit props in v-bind schema - some components (pickers) don't allow some attributes and giva a warning. Here you can omit this props by defining them
     // map element used for option attribute - used with select, autocomplete, radio, checkboxGroup et...  
   
+    custombasic:{ component:'custombasic', events:{ input:'update', update:'update' } },
+    customcolor:{ component:'customcolor', omit:['id','name','comp', 'map'], events:{ change:'update' } },
     default:{ component: 'el-input', events:{ input:'update' } },
     
     tag: { component: 'el-tag', events: { 'click': 'update' } },
@@ -294,9 +298,7 @@ const mapSchemaToElement ={
     timePicker:{ component: 'el-time-picker', omit:['id','name','comp'], events:{ change:'update' } },
     timeSelect:{ component: 'el-time-select', omit:['id','name','comp'], events:{ change:'update' } },
     colorPicker: { component:'el-color-picker', omit:['id','name','comp'], events:{ change:'update' } },
-    // color: { component:'el-color-picker', events:{ change:'update', change:'update', change:'update' } },
-
-    // switch:{ component: 'el-switch', nullValue: false, events:{ change:'update' } },
+    
     switch:{ component: 'el-switch', events:{ change:'update' } },
     radio:{ component: 'el-radio-group', option:'el-radio', events:{ change:'update' } },
     radioButton:{ component: 'el-radio-group', option:'el-radio-button', events:{ change:'update' } },
@@ -423,8 +425,8 @@ export default {
       return this.handleTextKey(obj, obj.schema)
     },
     setInnerTextFileButton(obj) {
-      this.handleValueKey(obj, obj.schema.button)
-      return this.handleTextKey(obj, obj.schema.button) 
+      this.handleValueKey(obj, obj.schema[innerFile])
+      return this.handleTextKey(obj, obj.schema[innerFile]) 
     },
     setInnerTextButton(obj) {
       // Set Value on Click
@@ -458,12 +460,8 @@ export default {
       return obj.schema[test];
     },
     getComponentObject(obj, prop = "component") {
-      let comp = obj.schema[componentTag] || defaultComponent;
-      let map = comp
-        ? mapSchemaToElement[comp]
-          ? mapSchemaToElement[comp]
-          : mapSchemaToElement[defaultComponent]
-        : mapSchemaToElement[defaultComponent];
+      let comp =  obj.schema[componentTag] || defaultComponent;
+      let map = comp ? mapSchemaToElement[comp] : mapSchemaToElement[defaultComponent];
       return map[prop]; // get for component in obj the matching prop from mapSchemaToElement in config.js
     },
     //#endregion
@@ -617,9 +615,10 @@ export default {
     //#endregion
 
     //#region BINDINGS
-    bindFileButtonSchema(obj){
-      obj.schema.button = isPlainObject(obj.schema.button) ? obj.schema.button : isString(obj.schema.button) ? { text: obj.schema.button }  : defaultFileButton;
-      return obj.schema.button
+    bindFileInnerSchema(obj){
+      const innerFile = 'schema' // file.schema:{ comp:'file', schema:{ comp:'button', text:'Upload', ...}, ... }
+      obj.schema[innerFile] = isPlainObject(obj.schema[innerFile]) ? obj.schema[innerFile] : isString(obj.schema[innerFile]) ? { text: obj.schema[innerFile] }  : defaultIinnerFile;
+      return obj.schema[innerFile]
     },
     bindCol(obj) {
       const col = obj.schema.col || this.col || defaultCol;
