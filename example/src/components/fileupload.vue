@@ -1,3 +1,7 @@
+<style>
+  #form-base .el-upload {display: block}
+  #form-base .el-upload__tip {color: green;}
+</style>
 <template>
 
   <v-form-base
@@ -7,11 +11,11 @@
   >
     <!-- Trigger Fileeselection   -->
     <template #slot-inject-trigger-key-form-base-upload>
-      <el-button size="small" type="primary">select file</el-button>
+        <el-button>Select File</el-button>
     </template>
     <!-- Show Info Tip -->
     <template #slot-inject-tip-key-form-base-upload="{obj}">   
-      <div :style="{backgroundColor:'#67C23A', color:'#FFF', padding:'4px'}" class="el-upload__tip">{{obj.schema.tip}}</div>
+      <span class="el-upload__tip">{{obj.schema.tip}}</span>
     </template>
 
   </v-form-base>
@@ -48,7 +52,7 @@ export default {
         },
         file: { 
           comp: 'file',
-          schema: 'Select Files',
+          // schema:'TES',
           action:'', // https://192.168.0.137:8080/api/',
           autoUpload:false,
           multiple:true,
@@ -65,9 +69,9 @@ export default {
           action:'',
           autoUpload:false,
           text:'Upload Selector',
-          accept:' .jpg, .jpeg, .png, .gif',          
+          accept:' .jpg, .jpeg, .png, .gif',                   
           tip:'Only Images',
-          schema:{ comp:'button', type:'success', size:'large', text:'Upload', iconRight:'el-icon-upload2' }
+          schema:{ comp:'button', type:'success', style:{display:'block'}, size:'large', text:'Upload', iconRight:'el-icon-upload2' }
           // onChange: (f,fl)=>  console.log('inline sel-upload',f, fl),
           // :file-list="fileList"
         }, 

@@ -29,7 +29,7 @@
       
       <!-- INJECT prefix into user-->
       <template #slot-inject-prefix-key-form-base-user="{obj}" >
-        <div class="slot">#</div>
+        <span class="slot">#</span>
       </template>
       <!-- INJECT suffix into user -->
       <template #slot-inject-suffix-key-form-base-user="{obj}" >

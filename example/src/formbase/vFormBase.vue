@@ -65,7 +65,7 @@
               <!-- WRAP/GROUP -->
               <template v-else-if="isComponent(obj, 'wrap|group')">
                 <component
-                  :is="getComponentObject(obj)"
+                  :is="getMappedObject(obj)"
                   v-bind="bindSchema(obj)"
                 >
                   <v-form-base
@@ -103,10 +103,11 @@
                 <el-upload
                   :on-change="(file, fileList) => onFileEvent(obj, file, fileList)"
                   v-bind="bindSchema(obj)"
+                  :test="1"
                 >
                   <!-- Button in Upload -->
                   <slot :name="getFileUploadSlot(obj)" v-bind="{ obj, index, id }" >
-                    <component :is="getComponentObject(obj.schema)" v-bind="bindFileInnerSchema(obj)">
+                    <component :is="getMappedObject(obj.schema)" v-bind="bindFileInnerSchema(obj)">
                       {{ setInnerTextFileButton(obj) }}
                       <i v-if="obj.schema.schema?.iconRight" :class="obj.schema.schema?.iconRight + ' el-icon-right'" />                    
                     </component>
@@ -126,7 +127,7 @@
               
               <component
                 v-else
-                :is="getComponentObject(obj)"
+                :is="getMappedObject(obj)"
                 :modelValue="getValue(obj)"
                 v-bind="bindSchema(obj)"
                 @update:modelValue="obj.value = $event"
@@ -150,8 +151,8 @@
                   {{setInnerTextCheckRadioSwitch(obj)}}
                 </template>
 
-                <template v-if="getComponentObject(obj, 'option')">
-                  <component :is="getComponentObject(obj, 'option')" v-for="(item, idx) in getOptions(obj)" :key="idx" v-bind="bindOptions(item, obj)" >
+                <template v-if="getMappedObject(obj, 'option')">
+                  <component :is="getMappedObject(obj, 'option')" v-for="(item, idx) in getOptions(obj)" :key="idx" v-bind="bindOptions(item, obj)" >
                     <slot :name="getOptionSlot(obj)" v-bind="{ obj, id, index, idx, item }">
                       {{ getOptionsValue(item, obj) }}
                     </slot>                    
@@ -239,12 +240,16 @@ const fileUploadSlotAppendix = `${slotAppendix}-${fileUploadAppendix}`
 // form-base attributes
 const defaultID = 'form-base'
 const defaultComponent = 'default' // must exist in mapSchemaToElement / mapper.js
-const defaultRow = { gutter:10, justify:'space-between', align:'start' } 
-const defaultCol = { span:6 } // { span:12, sm: 6, md:4, lg:3, xl:2}
+const defaultRow = { gutter:10, justify:'start', align:'middle' } 
+const defaultCol = { span:8 } // { span:12, sm: 6, md:4, lg:3, xl:2}
 const defaultFormLabel = null
 const defaultTooltip = (content) => ({ content, placement:'bottom', effect:'light', visibleArrow: false })
-const defaultIinnerFile = { comp:'buton', text:'File Upload', type:'primary', size:'medium', plain:true, icon:'el-icon-upload2'}
+const defaultIinnerFile = { comp:'button', text:'File Upload', type:'primary', size:'medium', plain:true, icon:'el-icon-upload2'}
+
+// props in mapSchemaToElement objects
+const placeholderTag = '*'
 const componentTag = 'comp'
+const mapTag = 'map'
 const nullValue = 'nullValue'
 
 // <Label> for <Input> - formbase attr :label=true and schema: { key: { formlabel:'Label' }}
@@ -257,7 +262,6 @@ const innerFile = 'schema'
 const hookGet = 'getVal' // schema.getVal = val or fn(val, obj) => val
 const hookSet = 'setVal' // schema.setVal = val or fn(val, obj) => val
 
-
 const setNoValueOnEvent = 'focus|click|blur|mousedown|mouseleave|mouseover|resize|dragstart|dragover|drop' 
 
 const defaultSchemaIfValueIsNullOrUndefined = key => ({ [componentTag]:'input', placeholder: key })
@@ -268,53 +272,53 @@ const defaultSchemaIfValueIsBoolean = key => ({ [componentTag]:'checkbox', place
 
 const mapSchemaToElement ={
     // mapper for each component from schema to intern component 
-    // map component: internal component from elements to use 
+    // map comp: internal component from elements to use 
     // set nullValue - value to present if value is null or undefined / default null
     // maps events - triggerevent: emittedEvent maximal 4 trigger events allowed
     // omit props in v-bind schema - some components (pickers) don't allow some attributes and giva a warning. Here you can omit this props by defining them
     // map element used for option attribute - used with select, autocomplete, radio, checkboxGroup et...  
   
-    custombasic:{ component:'custombasic', events:{ input:'update', update:'update' } },
-    customcolor:{ component:'customcolor', omit:['id','name','comp', 'map'], events:{ change:'update' } },
-    default:{ component: 'el-input', events:{ input:'update' } },
-    
-    tag: { component: 'el-tag', events: { 'click': 'update' } },
-    tree: { component: 'el-tree', events: { 'nodeClick': 'update', 'checkChange': 'update', 'currentChange': 'update', 'nodeExpand': 'update', 'nodeCollapse': 'update' } },
-    
-    group:{ component: 'el-card', events:{ input:'update' } },
-    wrap:{ component: 'el-card', events:{ input:'update' } },
-    array:{ component: 'array', events:{ input:'update'  } },
-    
-    file:{ component: 'el-upload', events:{ change:'update'  } },
-    input:{ component: 'el-input', nullValue: '', events:{ input:'update', clear:'update', dragstart:'dragstart', drop:'drop'  } },
-    native:{ component: 'el-input', nullValue: '', events:{ input:'update', click:'update'  } },
-    
-    number: { component: 'el-input-number', nullValue: 0, events: { change: 'update' } },
-    button:{ component: 'el-button', events:{  click:'update' } },
-    icon:{ component: 'i', events:{ click:'update' } },
-    rate:{ component: 'el-rate', events:{ change:'update' } },
-    
-    datePicker:{ component: 'el-date-picker', omit:['id','name','comp'], events:{ change:'update' } },
-    timePicker:{ component: 'el-time-picker', omit:['id','name','comp'], events:{ change:'update' } },
-    timeSelect:{ component: 'el-time-select', omit:['id','name','comp'], events:{ change:'update' } },
-    colorPicker: { component:'el-color-picker', omit:['id','name','comp'], events:{ change:'update' } },
-    
-    switch:{ component: 'el-switch', events:{ change:'update' } },
-    radio:{ component: 'el-radio-group', option:'el-radio', events:{ change:'update' } },
-    radioButton:{ component: 'el-radio-group', option:'el-radio-button', events:{ change:'update' } },
-    checkbox:{ component: 'el-checkbox', nullValue:false, events:{ change:'update' } },
-    checkboxButton:{ component: 'el-checkbox-button', nullValue:false, events:{ change:'update' } },
-    checkboxGroup:{ component: 'el-checkbox-group', nullValue: [], option:'el-checkbox', events:{ change:'update' } },
-    checkboxGroupButton:{ component: 'el-checkbox-group', nullValue: [], option:'el-checkbox-button', events:{ change:'update' } },
-    
-    select:{ component: 'el-select', option:'el-option', events:{ change:'update', blur:'update' } },
-    autocomplete:{ component: 'el-autocomplete', option:'el-option', events:{ input:'update' } },
-    
-    slider:{ component: 'el-slider', schema:{ showTooltip:false }, events:{ change:'update' } },
-    range:{ component: 'el-slider', events:{ change:'update' } },
-    
-  }
 
+    default:{ comp: 'el-input', events:{ input:'update' } },
+    // take schema.comp instead of mapping value
+    custom:{ comp:null, omit:['id','name','comp', 'map'], events:{ change:'update' } },
+    
+    tag: { comp: 'el-tag', events: { 'click': 'update' } },
+    tree: { comp: 'el-tree', events: { 'nodeClick': 'update', 'checkChange': 'update', 'currentChange': 'update', 'nodeExpand': 'update', 'nodeCollapse': 'update' } },
+    
+    group:{ comp: 'el-card', events:{ input:'update' } },
+    wrap:{ comp: 'el-card', events:{ input:'update' } },
+    array:{ comp: 'array', events:{ input:'update'  } },
+    
+    file:{ comp: 'el-upload', events:{ change:'update'  } },
+    input:{ comp: 'el-input', nullValue: '', events:{ input:'update', clear:'update', dragstart:'dragstart', drop:'drop'  } },
+    native:{ comp: 'el-input', nullValue: '', events:{ input:'update', click:'update'  } },
+    
+    number: { comp: 'el-input-number', nullValue: 0, events: { change: 'update' } },
+    button:{ comp: 'el-button', events:{  click:'update' } },
+    icon:{ comp: 'i', events:{ click:'update' } },
+    rate:{ comp: 'el-rate', events:{ change:'update' } },
+    
+    datePicker:{ comp: 'el-date-picker', omit:['id','name','comp'], events:{ change:'update' } },
+    timePicker:{ comp: 'el-time-picker', omit:['id','name','comp'], events:{ change:'update' } },
+    timeSelect:{ comp: 'el-time-select', omit:['id','name','comp'], events:{ change:'update' } },
+    colorPicker: { comp:'el-color-picker', omit:['id','name','comp'], events:{ change:'update' } },
+    
+    switch:{ comp: 'el-switch', events:{ change:'update' } },
+    radio:{ comp: 'el-radio-group', option:'el-radio', events:{ change:'update' } },
+    radioButton:{ comp: 'el-radio-group', option:'el-radio-button', events:{ change:'update' } },
+    checkbox:{ comp: 'el-checkbox', nullValue:false, events:{ change:'update' } },
+    checkboxButton:{ comp: 'el-checkbox-button', nullValue:false, events:{ change:'update' } },
+    checkboxGroup:{ comp: 'el-checkbox-group', nullValue: [], option:'el-checkbox', events:{ change:'update' } },
+    checkboxGroupButton:{ comp: 'el-checkbox-group', nullValue: [], option:'el-checkbox-button', events:{ change:'update' } },
+    
+    select:{ comp: 'el-select', option:'el-option', events:{ change:'update', blur:'update' } },
+    autocomplete:{ comp: 'el-autocomplete', option:'el-option', events:{ input:'update' } },
+    
+    slider:{ comp: 'el-slider', schema:{ showTooltip:false }, events:{ change:'update' } },
+    range:{ comp: 'el-slider', events:{ change:'update' } },
+    
+}
 
 //#endregion
 
@@ -459,11 +463,24 @@ export default {
     hasSchema(obj, test) {
       return obj.schema[test];
     },
-    getComponentObject(obj, prop = "component") {
-      let comp =  obj.schema[componentTag] || defaultComponent;
-      let map = comp ? mapSchemaToElement[comp] : mapSchemaToElement[defaultComponent];
-      return map[prop]; // get for component in obj the matching prop from mapSchemaToElement in config.js
+    getMappedObject(obj, prop = componentTag) {
+
+      if (!obj.schema) { 
+       console.warn(`No Prop 'schema' found in obj:`,obj, ` From object 'mapSchemaToElement' 'default' prop used`, mapSchemaToElement[defaultComponent]);
+       return mapSchemaToElement[defaultComponent][prop]  
+      }
+      let key =  obj.schema[mapTag] || obj.schema[componentTag] || defaultComponent;
+      let mapObjFromSchema = obj.schema[prop]
+      let mapObjFromMapSchemaToElement = key ? mapSchemaToElement[key][prop] : mapSchemaToElement[defaultComponent][prop];
+      //  console.log(prop, mapObjFromMapSchemaToElement || mapObjFromSchema)   
+      return mapObjFromMapSchemaToElement ?? mapObjFromSchema   
     },
+    // getMappedObject(obj, prop = componentTag) {
+    //   let comp =  obj.schema[componentTag] || defaultComponent;
+    //   let map = comp ? mapSchemaToElement[comp] : mapSchemaToElement[defaultComponent];
+    //   console.log(prop, map[prop]); // get for component in obj the matching prop from mapSchemaToElement in config.js
+    //   return map[prop]; // get for component in obj the matching prop from mapSchemaToElement in config.js
+    // },
     //#endregion
 
     //#region SET/GETVAL, ONEVENT, EMIT & HELPER
@@ -471,7 +488,7 @@ export default {
       return isString(item) ? { item } : item;
     },
     getValue(obj) {
-      const nullValue = this.getComponentObject(obj, "nullValue");
+      const nullValue = this.getMappedObject(obj, "nullValue");
       return obj.value || nullValue;
     },
     setValue(obj) {
@@ -479,14 +496,14 @@ export default {
     },
     getOnEventName(obj, index = 0) {
       const prop = "events";
-      let events = this.getComponentObject(obj, prop);
+      let events = this.getMappedObject(obj, prop);
       let eventsArray = Object.keys(events);
       // console.warn( 'key', obj.key, 'idx:', index, eventsArray[index] || 'xxx', eventsArray)
       return eventsArray[index] || undefined;
     },
     getEmitName(obj, index = 0) {
       const prop = "events";
-      let events = this.getComponentObject(obj, prop);
+      let events = this.getMappedObject(obj, prop);
       let eventsArray = Object.values(events);
       // console.warn( 'key', obj.key, 'idx:', index, eventsArray[index] || 'xxx', eventsArray)
       return eventsArray[index] || "-no emitter-";
@@ -517,7 +534,7 @@ export default {
     onEvent(obj, event, idx = 0, updateModel = true) {
       const emitName = this.getEmitName(obj, idx);
       const eventName = this.getOnEventName(obj, idx);
-      const getNullValue = this.getComponentObject(obj, "nullValue");
+      const getNullValue = this.getMappedObject(obj, "nullValue");
 
       //  console.log('*** ON EVENT :', eventName,'emit:', emitName, 'obj:', obj, 'index', idx, 'this.index', this.index, 'event',  event, );
       //  console.log('*** ON EVENT 1: obj:', obj.value, 'target:', event && event.target && event.target.innerText, 'event:', event);
@@ -651,7 +668,7 @@ export default {
     },
     bindSchema(obj) {
       // omit schema props for attr binding because some picker-components throw warning
-      const omitArray = this.getComponentObject(obj, "omit");
+      const omitArray = this.getMappedObject(obj, "omit");
       return omit(obj.schema, omitArray);
     },
     //#endregion
@@ -997,7 +1014,7 @@ export default {
         if (!schema[key]) {
           console.error(`No schema with key '${key}' found!`);
         }
-        if (schema[key] && !mapSchemaToElement[schema[key][componentTag]]) {
+        if (schema[key] && !mapSchemaToElement[schema[key][componentTag]] && !mapSchemaToElement[schema[key][mapTag]]) {
           // lookup for exist comp:'component' in mapSchemaToElement
           console.warn(
             `component '${schema[key][componentTag]}' not found in config.js/mapSchemaToElement, using ${key}:{${componentTag}:'${defaultComponent}'} instead!`

@@ -1,12 +1,12 @@
 <template>
-
   <v-form-base
-    :model= "myModel"
-    :schema= "mySchema"
-    @update:form-base= "log"
+    :model="myModel"
+    :schema="mySchema"
+    col=12
+    @update:form-base="log"
   />    
 
-  <infoline :model="myModel" :schema="mySchema"/>
+  <infoline :model="myModel" :schema="mySchema"/> 
 </template>
 
 <script>
@@ -16,22 +16,41 @@ import Infoline from './infoline.vue'
 import log from '../lib.js'
 
 export default {
-  name:'simple',
   components: { vFormBase, Infoline },
   data: ()=>({
-    myModel: {
-      user:'Jobs',
-      password:'12345678',
-      color:'#BB0022'
-    }, 
-    mySchema: {
-      user:{ comp: 'input', placeholder:'User', clearable:true }, 
-      password:{ comp: 'input', placeholder:'Password', showPassword:true }, 
-      color: { comp: 'colorPicker' }, 
-    }
+      myModel: {
+        name: 'Stoner',
+        position: 'Admin',
+        tasks: [
+          { 
+            done: true,
+            title: 'make refactoring' 
+          },
+          { 
+            done: false,
+            title: 'write documentation'  
+          },
+          { 
+            done: true,
+            title: 'remove logs'  
+          }        
+        ]        
+      },     
+      mySchema: {
+        name: { comp:'input', label:'Name' },
+        position: { comp:'input', label:'Position' },
+        tasks: { 
+          comp: 'array',
+          col:24,
+          schema: { 
+            done:{ comp:'checkbox', col:2}, 
+            title:{ comp:'input', clearable:true, col:22 }
+          } 
+        }
+      }                    
   }),  
   methods: {
-    log   
+    log
   }
 }
 </script>

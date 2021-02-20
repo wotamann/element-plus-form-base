@@ -16,7 +16,7 @@
     class= "align-component"
     :model= "myModel"
     :schema= "mySchema"
-    :col=14
+    :col=12
     :label="({key}) => key + ':' "
     @update:form-base-inp="log"
   />    
@@ -34,11 +34,15 @@ export default {
   name:'inputs',
   components: { vFormBase, Infoline },
   data: ()=>({
-    myModel: {                  
-        color:'#22CC66',
-        datetime: null,
+    myModel: {
+      timeSelection: '11:30',
+      time:null,
+      date:null,                  
+      datetime: null,
+      color:'#22CC66',
     },     
     mySchema: { 
+      timeSelection: { comp: 'timeSelect', placeholder:'Select time' }, 
       time: { comp: 'timePicker', placeholder:'Select time' }, 
       date: { comp: 'datePicker', placeholder:'Select date'}, 
       datetime: { comp: 'datePicker', type:'datetime', placeholder:'Select date and time'}, 

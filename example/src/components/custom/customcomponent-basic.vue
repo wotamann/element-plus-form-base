@@ -1,7 +1,3 @@
-
-<style>
-  .cc {border: 1px dotted #7e807c; padding: 4px;}
-</style>
 <template>
   <div class="cc" >
     <h4>Custom Input Component</h4>

@@ -35,9 +35,9 @@ export default {
           'Harari'
         ],
         objectList: [
-          { line: 1, name: 'Jobs' },
-          { line: 2, name: 'Taleb' },
-          { line: 3, name: 'Harari' }
+          { id: 1, name: 'Jobs' },
+          { id: 2, name: 'Taleb' },
+          { id: 3, name: 'Harari' }
         ]
       },
       mySchema: {
@@ -51,7 +51,7 @@ export default {
               comp: 'array',
               col:24,              
               schema: { 
-                item: { comp:'button' } //  prop name must be 'item' 
+                item: { comp:'button',textKey:'item' } //  prop name must be 'item' 
               }        
             },
           }
@@ -66,9 +66,7 @@ export default {
               comp: 'array',
               col:24,
               schema: { 
-                name: {comp:'button'  }, // list .name and value .name
-                // name: {comp:'button', valueKey:'line'  },  // value .line
-                // name: {comp:'button',  text:'List Item'}, // static set value
+                name: {comp:'button', valueKey:'id', textKey:'name'  },  // value .line
                 // name: {comp:'button',  getVal:(v) => v?.toUpperCase() }, // dynamic set value
                 
               }        

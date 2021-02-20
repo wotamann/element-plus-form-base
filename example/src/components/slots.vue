@@ -1,8 +1,9 @@
 <style>
   /* INFO-SCOPED: Don't use '<style scoped>' because scoped CSS is inside a child-component not accessable */
   /* CSS Item --- set all items  */
-  #form-base-slot .form-base-slot { margin:0px -6px 6px -6px; padding:10px;  border:1px dotted #999; background-color: #eee;}
-  #form-base-slot h5.slot { width: 98%; padding:2px; font-size: 0.9rem; font-weight: 400; color:#0061bd; background-color: #0062bd1e; border: 1px dotted #0061bd}
+  #form-base-slot { border: 1px dotted #4e4e4e; padding: 8px; background-color: #ffc40018; }
+  #form-base-slot .form-base-slot { margin:0px -4px 4px -4px; padding:8px;  border:1px dotted #999; background-color: rgba(238, 238, 238, 0.685);}
+  #form-base-slot h5.slot { width: 98%; padding:4px; font-size: 0.9rem; font-weight: 400; color:#ac8400; background-color: #ffc40036; border: 1px dotted #af8600}
   #form-base-slot h5.small { font-size: 0.75rem!important; }
 </style>
 

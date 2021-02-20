@@ -1,3 +1,6 @@
+<style>
+  #form-base :deep(.form-base) {border: 1px dotted #7e807c; padding: 4px;}
+</style>
 <template>
   
   <p>For proper work register <a href="https://vuejs.org/v2/guide/components-registration.html#Global-Registration">Custom-Control Components</a> globally in 'main.js'Vue.component('custom-object'</p>
@@ -48,8 +51,8 @@ export default {
         // custom4: { date:'10/10/2019' },
       },
       mySchema: {
-        custom1: { comp:'custombasic', map:'custom', clearable:true },
-        custom2: { comp: 'customcolor', map:'custom' },
+        custom1: { map:'custom', comp:'custombasic',  clearable:true  },
+        custom2: { map:'custom', comp: 'customcolor'  },
         // custom2: { comp: 'custom-object', map:'custom', label:'Object - Component' },
         // custom4: { comp: 'custom-extern', map:'custom', label:'Extern - Component', class:'ma-3 pa-4 grey lighten-3 caption' },
       }

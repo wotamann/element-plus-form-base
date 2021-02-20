@@ -1,6 +1,7 @@
 <style>
-  #form-base { border:1px solid #177cdb; background-color:#56a5f02d; padding: 0.66rem; margin-bottom:0.66rem ;}
-  #form-base label { color:#666; font-weight: 400; font-size: 0.75rem;   }
+  #form-base { border:1px solid #177cdb; background-color:#56a5f025; padding: 0.66rem; margin-bottom:0.66rem ;}
+  #form-base .form-base { margin-bottom: 4px;}
+  #form-base label { color:#00519c; font-weight: 400; font-size: 0.75rem;   }
   .select-none { user-select: none;}
   .right { float: right; }
 </style>
