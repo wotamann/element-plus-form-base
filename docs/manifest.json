@@ -8,12 +8,12 @@
   "index.js": {
     "isEntry": true,
     "isDynamicEntry": false,
-    "file": "assets/index.662f8c18.js",
+    "file": "assets/index.16e20b09.js",
     "imports": [],
     "dynamicImports": [],
     "facadeModuleId": "index.html"
   },
   "index.css": {
-    "file": "assets/index.1b14d175.css"
+    "file": "assets/index.7829bef9.css"
   }
 }
