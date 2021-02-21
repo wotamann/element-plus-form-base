@@ -30,7 +30,7 @@
 </template>
 
 <script>
-const url = 'https://github.com/wotamann/vuetify-form-base/blob/master/example/src/components'
+const url = 'https://github.com/wotamann/element-plus-form-base/blob/main/example/src/components'
 const fileObjectToString = (val) => `${val.name} - (File Object)` 
 
 export default {

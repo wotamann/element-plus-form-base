@@ -10,7 +10,6 @@
   "dependencies": {
     "element-plus": "latest",
     "lodash": "^4.17.20",
-    "v-mask": "^2.2.4",
     "vue": "^3.0.5",
     "vue-router": "^4.0.3"
   },
