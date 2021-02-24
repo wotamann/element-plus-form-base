@@ -1,7 +1,6 @@
-##  **Information:**
+##  Information:
 
-### Since Vuetify is not currently available for VUE 3.0, I have implemented Vuetify Form-Base for the Element Plus desktop UI library. 
-### Element-Plus-Form-base is currently still under intensive development and should not be used for production use.
+Element-Plus-Form-Base is an adaptation of Vuetify-Form-Base to the framework Element-Plus. Since Vuetify is not currently available for VUE 3.0, you can therefore alternatively use Element-Plus-Form-Base with Vue 3.0 applications. 
 
 
 # Element-Plus-Form-Base
