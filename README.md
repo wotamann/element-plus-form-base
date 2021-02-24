@@ -1,6 +1,6 @@
 ##  Information:
 
-Element-Plus-Form-Base is an adaptation of Vuetify-Form-Base to the framework Element-Plus. Since Vuetify is not currently available for VUE 3.0, you can therefore alternatively use Element-Plus-Form-Base with Vue 3.0 applications. 
+Element-Plus-Form-Base is an adaptation of Vuetify-Form-Base to the framework Element-Plus. Since Vuetify is not currently available for VUE 3.0, you can therefore alternatively use Element-Plus-Form-Base with Vue 3.0 applications. Element-Plus-Form-base is currently under development.
 
 
 # Element-Plus-Form-Base
